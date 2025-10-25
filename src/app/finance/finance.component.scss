@@ -1,0 +1,86 @@
+.app-bg { --background: var(--ion-color-light); }
+
+.sub-toolbar {
+  --background: transparent;
+  .month {
+    padding: 4px 16px 10px 16px;
+    color: var(--ion-color-medium);
+    font-weight: 500;
+  }
+}
+
+.add-btn {
+  --border-radius: 16px;
+  --padding-start: 10px;
+  --padding-end: 10px;
+}
+
+.balance-card {
+  margin: 16px;
+  padding: 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #121826 0%, #2a2f45 100%);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+
+  .balance-title { color: #cfd3ff; font-size: 13px; }
+  .balance-value { font-size: 28px; font-weight: 800; margin-top: 4px; }
+
+  .mini-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;
+    .mini-label { color: #aab0d4; font-size: 12px; }
+    .mini-value { color: #ffffff; font-weight: 700; font-size: 15px; }
+  }
+}
+
+.seg-wrapper { padding: 0 16px 8px 16px; }
+
+ion-list { padding: 0 10px; }
+
+.tx-card {
+  margin: 10px 6px 14px 6px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.06);
+
+  .row1 {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 14px 6px 14px;
+    .left { display: flex; align-items: center; gap: 10px; }
+    .dot { width: 20px; height: 20px; border-radius: 999px; }
+    .title { font-weight: 700; }
+    .amount { font-weight: 800; }
+    .amount .sign { margin-left: 6px; font-weight: 700; }
+    .amount.plus { color: var(--ion-color-success); }
+    .amount.minus { color: var(--ion-color-danger); }
+  }
+
+  .row2 {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 12px 10px 12px;
+    .meta {
+      display: flex; align-items: center; gap: 6px;
+      color: var(--ion-color-medium); font-weight: 500;
+    }
+    .actions { display: flex; gap: 8px; }
+    .actions ion-button { --border-radius: 12px; height: 30px; }
+  }
+
+  .note {
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 12px 12px 12px; padding: 10px;
+    border-radius: 12px;
+    --background: var(--ion-color-light);
+    color: var(--ion-color-medium);
+    ion-icon { color: var(--ion-color-medium); }
+  }
+
+  &.income { border-left: 4px solid var(--ion-color-success); }
+  &.expense { border-left: 4px solid var(--ion-color-danger); }
+}
+
+.spacer { height: 24px; }
+
+@media (max-width: 380px) {
+  .balance-card { margin: 12px; }
+  .tx-card { margin: 8px 6px; }
+}

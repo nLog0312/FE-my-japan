@@ -1,0 +1,116 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Thêm Work Log</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (loaded) {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <ion-list lines="full">
+        <!-- Giờ bắt đầu -->
+        <ion-item class="item-time">
+          <ion-label position="stacked">Giờ bắt đầu</ion-label>
+          <ion-datetime-button datetime="startTime"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime
+                id="startTime"
+                hourCycle="h24"
+                locale="vi-GB"
+                formControlName="start_time">
+              </ion-datetime>
+            </ng-template>
+          </ion-modal>
+          <ion-note slot="end" (click)="showPopover($event)">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+          </ion-note>
+        </ion-item>
+
+        <!-- Thời gian kết thúc -->
+        <ion-item class="item-time">
+          <ion-label position="stacked">Giờ kết thúc</ion-label>
+          <ion-datetime-button datetime="endTime"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime
+                id="endTime"
+                hourCycle="h24"
+                locale="vi-GB"
+                formControlName="end_time">
+              </ion-datetime>
+            </ng-template>
+          </ion-modal>
+          <ion-note slot="end" (click)="showPopover($event)">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+          </ion-note>
+        </ion-item>
+
+        <!-- Thời gian nghỉ -->
+        <ion-item>
+          <ion-label position="floating">Thời gian nghỉ (phút)</ion-label>
+          <ion-input type="number" formControlName="break_minutes" appZeroIfEmpty></ion-input>
+        </ion-item>
+
+        <!-- Lương -->
+        <ion-item>
+          <ion-label position="floating">Tiền theo giờ (¥)</ion-label>
+          <ion-input type="number" formControlName="hourly_rate" appZeroIfEmpty></ion-input>
+          <ion-note slot="end" (click)="showPopover($event)">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+          </ion-note>
+        </ion-item>
+
+        <ion-popover [isOpen]="isPopoverOpen" [event]="popoverEvent" (didDismiss)="isPopoverOpen=false">
+          <ng-template>
+            <ion-content class="ion-padding">
+              <p>{{popoverMessage}}</p>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+
+        <!-- Giờ làm bình thường -->
+        <ion-item>
+          <ion-label position="floating">Số giờ làm bình thường</ion-label>
+          <ion-input type="number" formControlName="regular_hours" appZeroIfEmpty></ion-input>
+        </ion-item>
+
+        <!-- Làm thêm -->
+        <ion-item>
+          <ion-label>Thêm giờ tăng ca?</ion-label>
+          <ion-toggle formControlName="is_overtime"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="form.get('is_overtime')?.value">
+          <ion-label position="floating">Số giờ tăng ca</ion-label>
+          <ion-input type="number" formControlName="overtime_hours" appZeroIfEmpty></ion-input>
+        </ion-item>
+
+        <ion-item *ngIf="form.get('is_overtime')?.value">
+          <ion-label position="floating">Hệ số tăng ca</ion-label>
+          <ion-input type="number" step="0.01" formControlName="overtime_multiplier" appZeroIfEmpty></ion-input>
+          <ion-note slot="end" (click)="showPopover($event)">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+          </ion-note>
+        </ion-item>
+
+        <!-- Ghi chú -->
+        <ion-item>
+          <ion-label position="floating">Ghi chú</ion-label>
+          <ion-textarea formControlName="note" autoGrow="true"></ion-textarea>
+        </ion-item>
+
+      </ion-list>
+
+      <ion-button [disabled]="form.invalid" expand="block" type="submit" color="secondary" class="ion-margin-top">
+        Lưu
+      </ion-button>
+    </form>
+  }
+</ion-content>

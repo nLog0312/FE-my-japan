@@ -1,0 +1,97 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Thu chi</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="solid" size="small" class="add-btn" (click)="addTx()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Thêm
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar class="sub-toolbar">
+    <div class="month">{{ monthLabel }}</div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="app-bg">
+
+  <!-- Balance card -->
+  <ion-card class="balance-card">
+    <div class="balance-title">Số dư</div>
+    <div class="balance-value">
+      {{ balance | currency }}
+    </div>
+
+    <div class="mini-stats">
+      <div class="mini">
+        <div class="mini-label">Thu nhập</div>
+        <div class="mini-value">
+          {{ incomeTotal | currency }}
+        </div>
+      </div>
+      <div class="mini">
+        <div class="mini-label">Chi tiêu</div>
+        <div class="mini-value">
+          {{ expenseTotal | currency }}
+        </div>
+      </div>
+    </div>
+  </ion-card>
+
+  <!-- Segments -->
+  <div class="seg-wrapper">
+    <ion-segment [(ngModel)]="segment" mode="ios">
+      <ion-segment-button value="all">
+        <ion-label>Tất cả</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="income">
+        <ion-label>Thu nhập</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="expense">
+        <ion-label>Chi tiêu</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Transactions list -->
+  <ion-list lines="none">
+    <ion-card class="tx-card" *ngFor="let t of filteredTxs" [class.income]="t.amount>0" [class.expense]="t.amount<0">
+      <div class="row1">
+        <div class="left">
+          <ion-badge [color]="t.tagColor || (t.amount>0 ? 'success' : 'danger')" class="dot" mode="ios"> </ion-badge>
+          <div class="title">{{ t.title }}</div>
+        </div>
+        <div class="amount" [class.plus]="t.amount>0" [class.minus]="t.amount<0">
+          {{ (t.amount>0 ? t.amount : -t.amount) | currency }}
+          <span class="sign">{{ t.amount>0 ? '+' : '-' }}</span>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="meta">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>{{ t.dateISO | date:'dd-MM' }}</span>
+        </div>
+
+        <div class="actions">
+          <ion-button size="small" fill="outline" (click)="onEdit(t)">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            Sửa
+          </ion-button>
+          <ion-button size="small" color="danger" (click)="onDelete(t)">
+            <ion-icon name="trash-outline" slot="start"></ion-icon>
+            Xóa
+          </ion-button>
+        </div>
+      </div>
+
+      <div class="note" *ngIf="t.note">
+        <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+        <span>{{ t.note }}</span>
+      </div>
+    </ion-card>
+  </ion-list>
+
+  <div class="spacer"></div>
+</ion-content>

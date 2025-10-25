@@ -1,0 +1,52 @@
+<ion-header translucent="true">
+  <ion-toolbar>
+    <ion-title size="large">Cài đặt</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" [fullscreen]="true">
+  <ion-list inset="true">
+
+    <!-- Personal Info -->
+    <ion-item button detail="true" (click)="openProfileModal()" lines="full">
+      <ion-icon slot="start" name="person-circle-outline"></ion-icon>
+      <ion-label>Thông tin cá nhân</ion-label>
+    </ion-item>
+
+    <!-- Change Password (mở modal) -->
+    <ion-item button detail="true" (click)="openChangePassword()" lines="full">
+      <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
+      <ion-label>Đổi mật khẩu</ion-label>
+    </ion-item>
+
+    <!-- Logout -->
+    <ion-item button detail="false" (click)="logout()" lines="full" class="logout-item">
+      <ion-icon slot="start" name="log-out-outline" color="danger"></ion-icon>
+      <ion-label class="logout-label">Đăng xuất</ion-label>
+    </ion-item>
+
+    <!-- Delete Account -->
+    <ion-item button detail="false" id="present-alert" lines="full" class="delete-account-item">
+      <ion-icon slot="start" name="ban-outline" color="danger"></ion-icon>
+      <ion-label class="delete-account-label">Xoá tài khoản</ion-label>
+    </ion-item>
+    <ion-alert
+      trigger="present-alert"
+      header="Xoá tài khoản!"
+      message="Mọi thông tin sẽ bị xoá vĩnh viễn và không thể khôi phục. Bạn có chắc chắn muốn xoá tài khoản không?"
+      [buttons]="alertButtons"
+      (didDismiss)="setResult($event)"
+    ></ion-alert>
+
+  </ion-list>
+</ion-content>
+
+<ion-footer [translucent]="true" class="ion-no-border">
+  <ion-toolbar>
+    <ion-title size="small" class="pb-0">
+      <a href="https://nlog0312.is-a.dev" target="_blank" rel="noopener noreferrer">
+        Liên hệ với tôi
+      </a>
+    </ion-title>
+  </ion-toolbar>
+</ion-footer>

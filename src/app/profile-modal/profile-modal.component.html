@@ -1,0 +1,106 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Thông tin cá nhân</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label position="stacked">Họ và tên</ion-label>
+    <ion-input [(ngModel)]="profile.name"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Email</ion-label>
+    <ion-input [(ngModel)]="profile.email" type="email">
+      <ion-button *ngIf="!isActiveEmail || currentEmail != profile.email" color="danger" fill="outline" slot="end">
+        Kích hoạt
+      </ion-button>
+    </ion-input>
+  </ion-item>
+
+  <div class="d-flex justify-content-between">
+    <ion-list>
+      <ion-item>
+        <ion-select
+          [(ngModel)]="profile.locale"
+          aria-label="Ngôn ngữ"
+          interface="popover"
+          placeholder="Ngôn ngữ"
+        >
+          <ion-select-option value="vi">Tiếng Việt</ion-select-option>
+          <ion-select-option value="ja">Tiếng Nhật</ion-select-option>
+
+          <ion-note slot="end" (click)="showPopover($event, lstPopoverMessage.locale)">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+          </ion-note>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+
+    <ion-popover [isOpen]="isPopoverOpen" [event]="popoverEvent" (didDismiss)="isPopoverOpen=false">
+      <ng-template>
+        <ion-content class="ion-padding">
+          <p>{{popoverMessage}}</p>
+        </ion-content>
+      </ng-template>
+    </ion-popover>
+  </div>
+
+  <ion-item>
+    <ion-checkbox checked="profile.setup_worklog.auto" labelPlacement="start" (ionChange)="showAutoWorkLogSetup($event)">Tự động thêm 'giờ làm'</ion-checkbox>
+  </ion-item>
+  <div *ngIf="profile.setup_worklog.auto">
+    <div class="d-flex justify-content-around">
+      <div>
+        <ion-label position="stacked">Giờ bắt đầu</ion-label>
+        <ion-datetime-button datetime="startTime"></ion-datetime-button>
+
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime
+              id="startTime"
+              presentation="time"
+              hour-cycle="h23"
+              [(ngModel)]="profile.setup_worklog.start_time">
+            </ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </div>
+
+      <div>
+        <ion-label position="stacked">Giờ kết thúc</ion-label>
+        <ion-datetime-button datetime="endTime"></ion-datetime-button>
+
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime
+              id="endTime"
+              presentation="time"
+              hour-cycle="h23"
+              [(ngModel)]="profile.setup_worklog.end_time">
+            </ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </div>
+    </div>
+
+    <ion-item>
+      <ion-label position="stacked">Lương theo giờ</ion-label>
+      <ion-input type="number" [(ngModel)]="profile.setup_worklog.hourly_rate"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Hệ số tăng ca</ion-label>
+      <ion-input type="number" [(ngModel)]="profile.setup_worklog.overtime_multiplier"></ion-input>
+    </ion-item>
+  </div>
+
+  <ion-button color="secondary" expand="block" class="ion-margin-top" (click)="save()">Lưu thay đổi</ion-button>
+</ion-content>

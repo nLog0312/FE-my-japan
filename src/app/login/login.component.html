@@ -1,0 +1,228 @@
+<ion-content class="ion-padding login-page">
+  <div class="logo-container">
+    <img src="assets/icon/favicon.png" alt="Logo" class="logo" />
+  </div>
+
+  <h2 class="welcome-text">Chào bạn!</h2>
+
+  <ion-segment class="auth-segment">
+    <ion-segment-button value="login" content-id="login">
+      <ion-label>Đăng Nhập</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="register" content-id="register">
+      <ion-label>Đăng Ký</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <ion-segment-view>
+    <!-- Form đăng nhập -->
+    <ion-segment-content id="login">
+      <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+        <ion-list>
+          <ion-item [class.invalid]="lf['user_name'].invalid && lf['user_name'].touched">
+            <ion-input
+              type="text"
+              formControlName="user_name"
+              placeholder="Email hoặc Tên tài khoản"
+            >
+            </ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="lf.user_name.touched && lf.user_name.errors?.['required']">
+            Vui lòng nhập email hoặc tên tài khoản.
+          </ion-note>
+
+          <ion-item [class.invalid]="lf['password'].invalid && lf['password'].touched">
+            <ion-input
+              type="password"
+              formControlName="password"
+              placeholder="Mật khẩu"
+            >
+              <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+            </ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="lf.password.touched && lf.password.errors?.['required']">
+            Vui lòng nhập mật khẩu.
+          </ion-note>
+          <ion-note color="danger" *ngIf="lf.password.touched && lf.password.errors?.['minlength']">
+            Mật khẩu tối thiểu 6 ký tự.
+          </ion-note>
+
+          <ion-label class="forgot-link">
+            <a href="/forgot-password">Quên mật khẩu?</a>
+          </ion-label>
+        </ion-list>
+
+        <div class="d-flex justify-content-center">
+          <ion-button
+            expand="block"
+            shape="round"
+            class="login-button"
+            type="submit"
+            [disabled]="loginForm.invalid"
+          >
+            Đăng Nhập
+          </ion-button>
+        </div>
+
+        <div class="d-flex align-items-center my-3">
+          <hr class="flex-grow-1" />
+          <span class="px-2 text-muted">Hoặc</span>
+          <hr class="flex-grow-1" />
+        </div>
+        <div class="social-login">
+          <ion-button fill="clear" class="social-btn">
+            <span class="btn-inner--icon"><img src="assets/icon/github.svg" alt="github" width="28" height="28"></span>
+          </ion-button>
+          <ion-button fill="clear" class="social-btn">
+            <span class="btn-inner--icon"><img src="assets/icon/google.svg" alt="google" width="28" height="28"></span>
+          </ion-button>
+          <ion-button fill="clear" class="social-btn">
+            <span class="btn-inner--icon"><img src="assets/icon/ph_favicon.ico" alt="ph" width="26" height="26" class="w-auto"></span>
+          </ion-button>
+        </div>
+      </form>
+
+      <div class="register-text">
+        <p>Chưa có tài khoản?</p>
+        <a href="javascript:void(0)" class="link" (click)="goTo('register')">Đăng ký ngay</a>
+      </div>
+    </ion-segment-content>
+
+    <!-- Form đăng ký -->
+    <ion-segment-content id="register">
+      <!-- <form (ngSubmit)="onRegister()" class="auth-form"> -->
+      <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="submitRegister()">
+        <ion-list>
+          <ion-item [class.invalid]="rf['user_name'].invalid && rf['user_name'].touched">
+            <ion-input
+              type="text"
+              formControlName="user_name"
+              placeholder="Tài khoản"
+            >
+            </ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="rf.user_name.touched && rf.user_name.errors?.['required']">
+            Vui lòng nhập tài khoản.
+          </ion-note>
+          <ion-note color="danger" *ngIf="rf.user_name.touched && rf.user_name.errors?.['minlength']">
+            Tài khoản tối thiểu 3 ký tự.
+          </ion-note>
+
+          <ion-item [class.invalid]="rf['password'].invalid && rf['password'].touched">
+            <ion-input
+              type="password"
+              formControlName="password"
+              placeholder="Mật khẩu"
+            >
+              <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+            </ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="rf.password.touched && rf.password.errors?.['required']">
+            Vui lòng nhập mật khẩu.
+          </ion-note>
+          <ion-note color="danger" *ngIf="rf['password']?.touched && !rf.password.errors?.['minlength'] && rf['password']?.errors?.['weakPassword']">
+            Mật khẩu phải ≥ 8 ký tự, có ít nhất 1 chữ hoa và 1 số.
+          </ion-note>
+
+          <ion-item [class.invalid]="rf['email'].invalid && rf['email'].touched">
+            <ion-input
+              type="email"
+              formControlName="email"
+              placeholder="Email"
+            >
+              <ion-note slot="end" (click)="showPopover($event, lstPopoverMessage.mail)">
+                <ion-icon name="alert-circle-outline"></ion-icon>
+              </ion-note>
+            </ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="rf.email.touched && rf.email.errors?.['required']">
+            Vui lòng nhập email.
+          </ion-note>
+          <ion-note color="danger" *ngIf="rf.email.touched && rf.email.errors?.['email']">
+            Email không hợp lệ.
+          </ion-note>
+
+          <ion-item [class.invalid]="rf['name'].invalid && rf['name'].touched">
+            <ion-input
+              type="text"
+              formControlName="name"
+              placeholder="Họ tên"
+            >
+              <ion-note slot="end" (click)="showPopover($event, lstPopoverMessage.mail)">
+                <ion-icon name="alert-circle-outline"></ion-icon>
+              </ion-note>
+            </ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="rf.name.touched && rf.name.errors?.['minlength']">
+            Họ tên tối thiểu 2 ký tự.
+          </ion-note>
+
+          <div class="d-flex justify-content-between">
+            <ion-list>
+              <ion-item [class.invalid]="rf['locale'].invalid && rf['locale'].touched">
+                <ion-select
+                  formControlName="locale"
+                  aria-label="Ngôn ngữ"
+                  interface="popover"
+                  placeholder="Ngôn ngữ"
+                >
+                  <ion-select-option value="vi">Tiếng Việt</ion-select-option>
+                  <ion-select-option value="ja">Tiếng Nhật</ion-select-option>
+
+                  <ion-note slot="end" (click)="showPopover($event, lstPopoverMessage.locale)">
+                    <ion-icon name="alert-circle-outline"></ion-icon>
+                  </ion-note>
+                </ion-select>
+              </ion-item>
+              <ion-note color="danger" *ngIf="rf.locale.touched && rf.locale.errors?.['required']">
+                Vui lòng chọn ngôn ngữ.
+              </ion-note>
+            </ion-list>
+          </div>
+        </ion-list>
+
+        <ion-popover [isOpen]="isPopoverOpen" [event]="popoverEvent" (didDismiss)="isPopoverOpen=false">
+          <ng-template>
+            <ion-content class="ion-padding">
+              <p>{{popoverMessage}}</p>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+
+        <div class="d-flex justify-content-center">
+          <ion-button
+            expand="block"
+            shape="round"
+            class="login-button"
+            type="submit"
+            [disabled]="registerForm.invalid"
+          >
+            Đăng Ký
+          </ion-button>
+        </div>
+
+        <div class="d-flex align-items-center my-3">
+          <hr class="flex-grow-1" />
+          <span class="px-2 text-muted">Hoặc</span>
+          <hr class="flex-grow-1" />
+        </div>
+        <div class="social-login">
+          <ion-button fill="clear" class="social-btn">
+            <span class="btn-inner--icon"><img src="assets/icon/github.svg" alt="github" width="28" height="28"></span>
+          </ion-button>
+          <ion-button fill="clear" class="social-btn">
+            <span class="btn-inner--icon"><img src="assets/icon/google.svg" alt="google" width="28" height="28"></span>
+          </ion-button>
+          <ion-button fill="clear" class="social-btn">
+            <span class="btn-inner--icon"><img src="assets/icon/ph_favicon.ico" alt="ph" width="26" height="26" class="w-auto"></span>
+          </ion-button>
+        </div>
+      </form>
+
+      <div class="register-text">
+        <p>Đã có tài khoản?</p>
+        <a href="javascript:void(0)" class="link" (click)="goTo('login')">Đăng nhập ngay</a>
+      </div>
+    </ion-segment-content>
+  </ion-segment-view>
+</ion-content>

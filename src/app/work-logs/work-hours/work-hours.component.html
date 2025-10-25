@@ -1,0 +1,140 @@
+<ion-header translucent="true" class="ion-no-border">
+  <ion-toolbar class="p-3">
+    <div class="title">
+      <h1 class="mb-0">
+        Giờ làm &amp; Lương
+      </h1>
+    </div>
+    <div class="sub-title">
+      Tháng {{ now | date:'MM, y' }}
+    </div>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="addEntry()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Thêm
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="app-bg">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Kéo để làm mới"
+      refreshingSpinner="circles"
+      refreshingText="Làm mới..."
+    >
+    </ion-refresher-content>
+  </ion-refresher>
+@if (loaded) {
+  <!-- Summary cards -->
+  <div class="summary">
+    <ion-card class="total-earning stat">
+      <div class="stat-label">Tổng lương</div>
+      <div class="stat-value">
+        {{ data_WorkLog.total_salary | currency:'JPY':'symbol':'1.0-0':'ja-JP' }}
+      </div>
+      <div class="end-value">
+        = {{ data_WorkLog.total_salary_regular | currency:'JPY':'symbol':'1.0-0':'ja-JP' }} + {{ data_WorkLog.total_salary_overtime | currency:'JPY':'symbol':'1.0-0':'ja-JP' }}
+      </div>
+    </ion-card>
+
+    <ion-card class="total-hr-ot stat">
+      <div class="stat-label">Tổng giờ thường</div>
+      <div class="stat-value">{{ data_WorkLog.total_regulartime_hours }}h</div>
+      <hr>
+      <div class="stat-label">Tổng giờ tăng ca</div>
+      <div class="stat-value">{{ data_WorkLog.total_overtime_hours }}h</div>
+    </ion-card>
+  </div>
+
+  <!-- Day cards -->
+  <ion-card class="day-card" *ngFor="let item of data_WorkLog.results">
+    <div class="day-header">
+      <div class="date">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <span>{{ item.start_time | date:'EEE, dd/MM':'UTC+9':'vi' }}</span>
+      </div>
+
+      <ion-chip *ngIf="item.is_overtime" color="warning" class="overtime-chip" outline>
+        <ion-label>Tăng ca</ion-label>
+      </ion-chip>
+    </div>
+
+    <ion-list lines="none" class="info-list">
+      <ion-item>
+        <ion-label>Thời gian</ion-label>
+        <div class="value">{{ item.start_time | date:'HH:mm':'UTC+9':'vi' }} - {{ item.end_time | date:'HH:mm':'UTC+9':'vi' }}</div>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Giờ thường</ion-label>
+        <div class="value">{{ item.regular_hours }}h</div>
+      </ion-item>
+
+      <ion-item *ngIf="item.is_overtime">
+        <ion-label>Tăng ca</ion-label>
+        <div class="value">{{ item.overtime_hours }}h</div>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Nghỉ</ion-label>
+        <div class="value">{{ item.break_minutes }} phút</div>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Lương theo giờ</ion-label>
+        <div class="value">{{ item.hourly_rate | currency:'JPY':'symbol':'1.0-0':'ja-JP' }}</div>
+      </ion-item>
+    </ion-list>
+
+    <div class="total-row">
+      <div class="label">Tổng lương:</div>
+      <div class="earn">
+        {{ (item.hourly_rate * item.regular_hours + item.hourly_rate * item.overtime_hours * item.overtime_multiplier) | currency:'JPY':'symbol':'1.0-0':'ja-JP' }}
+      </div>
+    </div>
+
+    <div class="actions">
+      <ion-button size="small" fill="outline" (click)="onEdit(item)">
+        <ion-icon name="create-outline" slot="start"></ion-icon>
+        Sửa
+      </ion-button>
+      <ion-button size="small" color="danger" fill="solid" (click)="onDelete(item)">
+        <ion-icon name="trash-outline" slot="start"></ion-icon>
+        Xóa
+      </ion-button>
+    </div>
+
+    <ion-item class="note" lines="none" *ngIf="item.note">
+      <ion-icon name="pricetag-outline" slot="start"></ion-icon>
+      <ion-label>{{ item.note }}</ion-label>
+    </ion-item>
+  </ion-card>
+
+  <div class="spacer"></div>
+} @else {
+  <ion-card class="day-card">
+    <div class="day-header">
+      <ion-skeleton-text [animated]="true" style="width: 80px"></ion-skeleton-text>
+    </div>
+
+    <ion-list>
+      <ion-item>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text [animated]="true" style="width: 80%;"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text [animated]="true" style="width: 60%;"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text [animated]="true" style="width: 30%;"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+}
+</ion-content>

@@ -1,0 +1,109 @@
+.login-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.logo-container {
+  margin-top: 10px;
+}
+
+.logo {
+  max-width: 50%;
+}
+
+.welcome-text {
+  font-size: 40px;
+  font-weight: bold;
+  margin: 0 0 20px 0;
+  color: #1a2b3c;
+}
+ion-segment-button{
+  min-height: 30px;
+}
+
+.auth-segment {
+  margin: 10px 0 20px 0;
+}
+
+.auth-form {
+  margin: 0 auto 10px auto;
+}
+
+ion-item {
+  --background: #f8f8f8;
+  --border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+ion-input {
+  padding-left: 10px;
+}
+
+.forgot-link {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 16px;
+  margin: 16px 0;
+}
+
+.forgot-link a {
+  text-decoration: none;
+}
+
+.login-button {
+  width: 60%;
+  margin-top: 10px;
+  --background: #1a2b3c;
+  --color: white;
+  font-weight: bold;
+}
+
+.register-text {
+  margin-top: 16px;
+  font-size: 16px;
+  color: #333;
+}
+
+.link {
+  color: #1a2b3c;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.social-login {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.social-btn ion-icon {
+  font-size: 28px;
+  color: #1a2b3c;
+}
+
+ion-segment-view {
+  max-height: fit-content;
+}
+
+ion-segment-content {
+  max-height: fit-content;
+}
+
+/* Khi có class invalid */
+ion-item.invalid {
+  --border-color: var(--ion-color-danger);
+  --highlight-color-focused: var(--ion-color-danger);
+}
+
+ion-item.invalid ion-input {
+  color: var(--ion-color-danger);
+}
+
+ion-note[color="danger"] {
+  display: block;
+  text-align: left;
+  margin: -10px 0 10px 16px;
+}

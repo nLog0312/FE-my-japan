@@ -1,0 +1,87 @@
+<ion-header translucent="true" class="ion-no-border">
+  <ion-toolbar class="p-3">
+    <div class="title">
+      <h1 class="mb-0">
+        Xin chào {{ currentUser.name ?? currentUser.user_name }}!
+      </h1>
+    </div>
+    <div class="sub-title">
+      Tháng {{ now | date:'MM, y' }}
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-card class="balance-card">
+    <ion-card-content>
+      <div class="balance-title">Số dư tháng này</div>
+      <div class="balance-amount">{{ balance | currency:'VND':'symbol-narrow':'1.0-0' }}</div>
+      <div class="balance-sub"><ion-icon name="trending-up-outline"></ion-icon> +{{ momChange }}% so với tháng trước</div>
+    </ion-card-content>
+  </ion-card>
+
+
+  <div class="grid-2">
+    <ion-card class="mini-card success">
+      <ion-card-content>
+        <div class="mini-title"><ion-icon name="arrow-down-circle-outline"></ion-icon> Thu nhập</div>
+        <div class="mini-amount">{{ income | currency:'VND':'symbol-narrow':'1.0-0' }}</div>
+      </ion-card-content>
+    </ion-card>
+
+
+    <ion-card class="mini-card danger">
+      <ion-card-content>
+        <div class="mini-title"><ion-icon name="arrow-up-circle-outline"></ion-icon> Chi tiêu</div>
+        <div class="mini-amount">{{ expense | currency:'VND':'symbol-narrow':'1.0-0' }}</div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <ion-card class="info-card">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="time-outline" class="mr-2"></ion-icon> Giờ làm tháng này
+      </ion-card-title>
+      <ion-chip color="medium" slot="end"><ion-label>{{ totalHours }}h</ion-label></ion-chip>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="row between">
+        <div class="col"><div class="muted">Giờ thường</div><div class="strong">{{ regularHours }}h</div></div>
+        <div class="col end"><div class="muted">Tăng ca</div><div class="strong warn">{{ overtimeHours }}h</div></div>
+      </div>
+      <ion-item lines="none" class="mt-3">
+        <ion-label>Lương dự kiến</ion-label>
+        <ion-note slot="end" class="strong">{{ expectedSalary | currency:'VND':'symbol-narrow':'1.0-0' }}</ion-note>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title><ion-icon name="analytics-outline" class="mr-2"></ion-icon> Tình hình tài chính</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="muted mb-1">Tỷ lệ chi tiêu</div>
+      <ion-progress-bar [value]="spendRate"></ion-progress-bar>
+      <div class="small mt-1">{{ spendRate * 100 | number:'1.0-1' }}%</div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header class="row between center">
+      <ion-card-title><ion-icon name="list-outline" class="mr-2"></ion-icon> Việc cần làm</ion-card-title>
+      <ion-badge color="danger">{{ pendingTasks }}</ion-badge>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="inset">
+        <ion-item *ngFor="let t of tasks">
+          <ion-checkbox slot="start" [(ngModel)]="t.done"></ion-checkbox>
+          <ion-label [class.done]="t.done">{{ t.title }}</ion-label>
+          <ion-badge *ngIf="t.tag" slot="end" color="tertiary">{{ t.tag }}</ion-badge>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

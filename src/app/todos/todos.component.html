@@ -1,0 +1,83 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Việc cần làm</ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="add-btn" (click)="addItem()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Thêm
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar class="sub-toolbar">
+    <div class="subtext">{{ filtered.length }} công việc</div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="app-bg">
+  <!-- Stats -->
+  <div class="stats">
+    <ion-card class="stat"><div class="label">Chưa làm</div><div class="value">{{ countTodo }}</div></ion-card>
+    <ion-card class="stat"><div class="label">Đang làm</div><div class="value">{{ countDoing }}</div></ion-card>
+    <ion-card class="stat"><div class="label">Hoàn thành</div><div class="value">{{ countDone }}</div></ion-card>
+  </div>
+
+  <!-- Filters -->
+  <div class="seg-wrapper">
+    <ion-segment [(ngModel)]="segment" mode="ios">
+      <ion-segment-button value="all"><ion-label>Tất cả</ion-label></ion-segment-button>
+      <ion-segment-button value="todo"><ion-label>Chưa làm</ion-label></ion-segment-button>
+      <ion-segment-button value="doing"><ion-label>Đang làm</ion-label></ion-segment-button>
+      <ion-segment-button value="done"><ion-label>Xong</ion-label></ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- List -->
+  <ion-list lines="none">
+    <ion-card class="todo-card" *ngFor="let t of filtered" [class.done]="t.status==='done'">
+      <div class="row1">
+        <div class="left">
+          <!-- Vòng tròn toggle -->
+          <button class="circle tap"
+                  (click)="toggleStatus(t)"
+                  role="switch"
+                  [attr.aria-checked]="t.status==='done'"
+                  [class.active]="t.status==='doing'"
+                  [class.done]="t.status==='done'">
+            <ion-ripple-effect></ion-ripple-effect>
+          </button>
+
+          <div class="title" [class.strike]="t.status==='done'">{{ t.title }}</div>
+        </div>
+      </div>
+
+      <div class="desc" *ngIf="t.desc">{{ t.desc }}</div>
+
+      <div class="meta">
+        <div class="chips">
+          <div class="chip" *ngIf="t.dueISO">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ t.dueISO | date:'dd-MM' }}</span>
+          </div>
+
+          <div class="chip pri high"   *ngIf="t.priority==='high'"><ion-icon name="alert-circle-outline"></ion-icon><span>Cao</span></div>
+          <div class="chip pri medium" *ngIf="t.priority==='medium'"><ion-icon name="alert-circle-outline"></ion-icon><span>Trung bình</span></div>
+          <div class="chip pri low"    *ngIf="t.priority==='low'"><ion-icon name="alert-circle-outline"></ion-icon><span>Thấp</span></div>
+
+          <div class="chip tag" *ngIf="t.projectTag"><span>{{ t.projectTag }}</span></div>
+        </div>
+
+        <div class="actions">
+          <ion-button size="small" fill="outline" (click)="onEdit(t)">
+            <ion-icon name="create-outline" slot="start"></ion-icon>Sửa
+          </ion-button>
+          <ion-button size="small" color="danger" (click)="onDelete(t)">
+            <ion-icon name="trash-outline" slot="start"></ion-icon>Xóa
+          </ion-button>
+        </div>
+      </div>
+    </ion-card>
+  </ion-list>
+
+  <div class="spacer"></div>
+</ion-content>
