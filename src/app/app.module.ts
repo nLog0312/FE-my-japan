@@ -13,16 +13,12 @@ import { AuthInterceptor } from './interceptor/auth.interceptor';
 import localeVi from '@angular/common/locales/vi';
 import localeJa from '@angular/common/locales/ja';
 import { CommonModule, registerLocaleData } from '@angular/common';
-import { ZeroIfEmptyDirective } from './directives/zero-if-empty.directive';
 
 registerLocaleData(localeVi, 'vi');
 registerLocaleData(localeJa, 'ja-JP');
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    ZeroIfEmptyDirective,
-  ],
+  declarations: [ AppComponent ],
   imports: [
     CommonModule,
     BrowserModule,

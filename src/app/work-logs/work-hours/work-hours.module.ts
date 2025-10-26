@@ -6,6 +6,7 @@ import { WorkHoursPageRoutingModule } from './work-hours-routing.module';
 import { WorkHoursComponent } from './work-hours.component';
 import { WorklogCreateComponent } from '../worklog-create/worklog-create.component';
 import { WorklogUpdateComponent } from '../worklog-update/worklog-update.component';
+import { ZeroIfEmptyDirective } from 'src/app/directives/zero-if-empty.directive';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { WorklogUpdateComponent } from '../worklog-update/worklog-update.compone
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    WorkHoursPageRoutingModule
+    WorkHoursPageRoutingModule,
+    ZeroIfEmptyDirective,
   ],
   declarations: [
     WorkHoursComponent,

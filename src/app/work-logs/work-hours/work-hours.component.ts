@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController, RefresherCustomEvent, ModalController } from '@ionic/angular';
+import { AlertController, RefresherCustomEvent, ModalController, InfiniteScrollCustomEvent } from '@ionic/angular';
 import { LoadingService } from '../../services/loading.service';
 import { MyJapanApiService, WorkLogQueryDto } from '../../services/my-japan';
 import { ToastService } from '../../services/toast';
@@ -7,6 +7,7 @@ import { firstValueFrom, lastValueFrom, take, takeUntil, timeout } from 'rxjs';
 import { AuthService } from '../../services/auth';
 import { WorklogCreateComponent } from '../worklog-create/worklog-create.component';
 import { WorklogUpdateComponent } from '../worklog-update/worklog-update.component';
+import { CURRENT_PAGE, PAGE_SIZE } from 'src/app/constants';
 
 @Component({
   selector: 'app-work-hours',
@@ -16,9 +17,10 @@ import { WorklogUpdateComponent } from '../worklog-update/worklog-update.compone
 })
 export class WorkHoursComponent implements OnInit {
   now = new Date();
-  body: WorkLogQueryDto = new WorkLogQueryDto;
-  public loaded = false;
+  body: WorkLogQueryDto = new WorkLogQueryDto();
   data_WorkLog: any;
+  public loaded = false;
+  public disabledInfinite = false;
 
   constructor(
     private readonly auth: AuthService,
@@ -29,14 +31,16 @@ export class WorkHoursComponent implements OnInit {
     private readonly modalCtrl: ModalController,
   ) {}
 
-  ngOnInit(): void {
-    this.loadingData();
+  async ngOnInit(): Promise<void> {
+    await this.loadingData();
   }
 
   async loadingData() {
     try {
       const user = await firstValueFrom(this.auth.user$.pipe(take(1)));
       this.body.user_id = user?.id ?? '';
+      this.body.current = CURRENT_PAGE;
+      this.body.pageSize = PAGE_SIZE;
       const res = await lastValueFrom(
         this.myJapanApiService.apiV1WorkLogsGetAll(this.body).pipe(
           timeout(10000),
@@ -47,6 +51,10 @@ export class WorkHoursComponent implements OnInit {
       if (res.statusCode && res.statusCode >= 400) {
         this.toast.error(res.message);
       } else {
+        if (this.body.current < res.data.total_pages)
+          this.body.current += 1;
+        else this.disabledInfinite = true;
+
         this.data_WorkLog = res.data;
       }
     } catch (err: any) {
@@ -67,9 +75,48 @@ export class WorkHoursComponent implements OnInit {
 
   async handleRefresh(event: RefresherCustomEvent) {
     this.loaded = false;
+    this.body.current = CURRENT_PAGE;
+    this.disabledInfinite = false;
     await this.loadingData();
     event.target.complete();
     this.loaded = true;
+  }
+
+  async onIonInfinite(event: InfiniteScrollCustomEvent) {
+    try {
+      const res = await lastValueFrom(
+        this.myJapanApiService.apiV1WorkLogsGetAll(this.body).pipe(
+          timeout(10000),
+          takeUntil(this.auth.loggedOut$)
+        )
+      );
+
+      if (res.statusCode && res.statusCode >= 400) {
+        this.toast.error(res.message);
+      } else {
+        if (this.body.current && this.body.current < res.data.total_pages)
+          this.body.current += 1;
+        else this.disabledInfinite = true;
+
+        this.data_WorkLog.results = [ ...this.data_WorkLog.results, ...res.data.results ];
+      }
+    } catch (err: any) {
+      if (err?.status === 0) {
+        this.toast.error('Không thể kết nối máy chủ. Vui lòng kiểm tra mạng hoặc thử lại sau.');
+      } else if (err?.status >= 500) {
+        this.toast.error('Hệ thống đang bận. Thử lại sau ít phút.');
+      } else {
+        console.log(err);
+
+        const msg = (err?.error && (err.error.message || err.error.msg)) || 'Có lỗi xảy ra.';
+        this.toast.error(msg);
+      }
+    } finally {
+      console.log(this.disabledInfinite);
+
+      this.loaded = true;
+    }
+    event.target.complete();
   }
 
   async addEntry() {

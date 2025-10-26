@@ -27,7 +27,7 @@
     >
     </ion-refresher-content>
   </ion-refresher>
-@if (loaded) {
+@if (loaded && data_WorkLog) {
   <!-- Summary cards -->
   <div class="summary">
     <ion-card class="total-earning stat">
@@ -112,6 +112,10 @@
       <ion-label>{{ item.note }}</ion-label>
     </ion-item>
   </ion-card>
+
+  <ion-infinite-scroll [disabled]="disabledInfinite" (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content loadingText="Đang tải..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 
   <div class="spacer"></div>
 } @else {
