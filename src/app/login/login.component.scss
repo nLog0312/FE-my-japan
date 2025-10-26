@@ -32,7 +32,7 @@ ion-segment-button{
   margin: 0 auto 10px auto;
 }
 
-ion-item {
+ion-item:not(.remember-me) {
   --background: #f8f8f8;
   --border-radius: 12px;
   margin-bottom: 12px;
@@ -106,4 +106,8 @@ ion-note[color="danger"] {
   display: block;
   text-align: left;
   margin: -10px 0 10px 16px;
+}
+
+.clickable-label {
+  cursor: pointer;
 }

@@ -47,6 +47,17 @@
             Mật khẩu tối thiểu 6 ký tự.
           </ion-note>
 
+          <ion-item lines="none" class="remember-me">
+            <ion-checkbox
+              id="remember_me"
+              slot="start"
+              formControlName="remember_me"
+              name="remember_me"
+              color="primary"
+            ></ion-checkbox>
+            <ion-label for="remember_me" class="clickable-label">Ghi nhớ đăng nhập</ion-label>
+          </ion-item>
+
           <ion-label class="forgot-link">
             <a href="/forgot-password">Quên mật khẩu?</a>
           </ion-label>
@@ -179,6 +190,17 @@
               </ion-note>
             </ion-list>
           </div>
+
+          <ion-item lines="none" class="remember-me">
+            <ion-checkbox
+              id="remember_me"
+              slot="start"
+              formControlName="remember_me"
+              name="remember_me"
+              color="primary"
+            ></ion-checkbox>
+            <ion-label for="remember_me" class="clickable-label">Ghi nhớ đăng nhập</ion-label>
+          </ion-item>
         </ion-list>
 
         <ion-popover [isOpen]="isPopoverOpen" [event]="popoverEvent" (didDismiss)="isPopoverOpen=false">

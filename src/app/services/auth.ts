@@ -15,9 +15,7 @@ export class AuthService {
   private readonly _user$ = new BehaviorSubject<AuthUser | null>(null);
   user$ = this._user$.asObservable();
 
-  // phát tín hiệu yêu cầu logout (nhiều nơi có thể bắn)
   private readonly _logoutReq$ = new Subject<void>();
-  // đã logout (dùng để takeUntil hủy polling nếu cần)
   private readonly _loggedOut$ = new Subject<void>();
   loggedOut$ = this._loggedOut$.asObservable();
 
@@ -29,31 +27,26 @@ export class AuthService {
   }
 
   requestLogout() {
-    // chỉ phát tín hiệu, KHÔNG dọn dẹp/điều hướng ở đây
     this._logoutReq$.next();
   }
 
-  /** Thực thi logout: clear token + user; KHÔNG navigate ở đây */
   async logout() {
     await this.store.clear();
     this._user$.next(null);
-    this._loggedOut$.next(); // cho các stream khác hủy subscribe
+    this._loggedOut$.next();
   }
 
-  /** Đăng ký handler trung tâm: đảm bảo logout chỉ chạy 1 lần cho nhiều tín hiệu */
   initGlobalLogoutHandler() {
     return this._logoutReq$.pipe(
-      // Bỏ qua tín hiệu nếu đang xử lý 1 cái rồi
       exhaustMap(async () => {
         await this.logout();
-        // điều hướng tập trung ở đây
         await this.router.navigateByUrl('/login', { replaceUrl: true });
       })
     ).subscribe();
   }
 
-  async login(accessToken: string) {
-    await this.store.setAccess(accessToken);
+  async login(accessToken: string, remember = false) {
+    await this.store.setAccess(accessToken, undefined, remember);
     this.setUserFromToken(accessToken);
   }
 
@@ -61,7 +54,6 @@ export class AuthService {
     const token = await this.store.getAccess();
     if (!token) return;
     if (isJwtExpired(token)) {
-      // chỉ yêu cầu logout; handler trung tâm sẽ xử lý
       this.requestLogout();
       return;
     }
