@@ -119,6 +119,12 @@ export class WorkHoursComponent implements OnInit {
     event.target.complete();
   }
 
+  onSearchChange(event: any) {
+    console.log('Tìm kiếm:', event);
+    // event = { mode: 'month', value: '2025-10-01' } hoặc range
+  }
+
+
   async addEntry() {
     const modal = await this.modalCtrl.create({
       component: WorklogCreateComponent,

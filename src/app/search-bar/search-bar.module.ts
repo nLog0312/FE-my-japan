@@ -2,8 +2,7 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FinancePageRoutingModule } from './finance-routing.module';
-import { FinanceComponent } from './finance.component';
+import { SearchDateComponent } from './search-date/search-date.component';
 
 @NgModule({
   imports: [
@@ -11,10 +10,12 @@ import { FinanceComponent } from './finance.component';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    FinancePageRoutingModule
   ],
   declarations: [
-    FinanceComponent,
+    SearchDateComponent,
   ],
+  exports: [
+    SearchDateComponent,
+  ]
 })
-export class FinancesModule { }
+export class SearchBarModule { }

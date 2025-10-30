@@ -1,0 +1,76 @@
+<ion-accordion-group expand="inset">
+  <ion-accordion value="search">
+    <ion-item slot="header" color="light">
+      <ion-icon name="search-outline" slot="start"></ion-icon>
+      <ion-label>Tìm kiếm</ion-label>
+    </ion-item>
+
+    <div class="search-content" slot="content">
+      <ion-item lines="none">
+        <ion-label>Chế độ</ion-label>
+        <ion-select [(ngModel)]="mode" (ionChange)="onModeChange()">
+          <ion-select-option value="year">Năm</ion-select-option>
+          <ion-select-option value="month">Tháng - Năm</ion-select-option>
+          <ion-select-option value="day">Ngày - Tháng - Năm</ion-select-option>
+          <ion-select-option value="range">Khoảng thời gian</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Năm -->
+      <ion-item *ngIf="mode === 'year'">
+        <ion-label position="stacked">Chọn năm</ion-label>
+        <ion-datetime
+          presentation="year"
+          (ionChange)="emitValue($event)">
+        </ion-datetime>
+      </ion-item>
+
+      <!-- Tháng - Năm -->
+      <ion-item *ngIf="mode === 'month'">
+        <ion-label position="stacked">Chọn tháng - năm</ion-label>
+        <ion-datetime
+          presentation="month-year"
+          (ionChange)="emitValue($event)">
+        </ion-datetime>
+      </ion-item>
+
+      <!-- Ngày - Tháng - Năm -->
+      <ion-item *ngIf="mode === 'day'">
+        <ion-label position="stacked">Chọn ngày</ion-label>
+        <ion-datetime
+          presentation="date"
+          (ionChange)="emitValue($event)">
+        </ion-datetime>
+      </ion-item>
+
+      <!-- Khoảng thời gian -->
+      <ion-item *ngIf="mode === 'range'">
+        <ion-label position="stacked">Chọn khoảng thời gian</ion-label>
+        <ion-datetime
+          [(ngModel)]="rangeValue"
+          presentation="date-range"
+          (ionChange)="emitRangeChange($event)">
+        </ion-datetime>
+        <ion-datetime
+          [(ngModel)]="rangeValue"
+          presentation="date-range"
+          (ionChange)="emitRangeChange($event)">
+        </ion-datetime>
+      </ion-item>
+
+      <div *ngIf="mode === 'range' && rangeValue.start && rangeValue.end" class="range-display">
+        <ion-text color="medium">
+          <small>
+            Từ: {{ rangeValue.start | date:'dd/MM/yyyy' }}
+            → Đến: {{ rangeValue.end | date:'dd/MM/yyyy' }}
+          </small>
+        </ion-text>
+      </div>
+
+      <ion-button expand="block" fill="outline" color="medium" (click)="reset()">
+        <ion-icon name="refresh-outline" slot="start"></ion-icon>
+        Làm mới
+      </ion-button>
+    </div>
+  </ion-accordion>
+</ion-accordion-group>

@@ -49,6 +49,8 @@
     </ion-card>
   </div>
 
+  <app-search-date (searchChange)="onSearchChange($event)"></app-search-date>
+
   <!-- Day cards -->
   <ion-card class="day-card" *ngFor="let item of data_WorkLog.results">
     <div class="day-header">

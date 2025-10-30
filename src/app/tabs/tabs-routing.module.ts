@@ -17,7 +17,7 @@ const routes: Routes = [
       },
       {
         path: 'finance',
-        loadChildren: () => import('../finance/finance.module').then(m => m.WorkHoursModule)
+        loadChildren: () => import('../finance/finance.module').then(m => m.FinancesModule)
       },
       {
         path: 'todos',

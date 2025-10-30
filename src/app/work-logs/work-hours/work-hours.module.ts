@@ -7,6 +7,7 @@ import { WorkHoursComponent } from './work-hours.component';
 import { WorklogCreateComponent } from '../worklog-create/worklog-create.component';
 import { WorklogUpdateComponent } from '../worklog-update/worklog-update.component';
 import { ZeroIfEmptyDirective } from 'src/app/directives/zero-if-empty.directive';
+import { SearchBarModule } from 'src/app/search-bar/search-bar.module';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import { ZeroIfEmptyDirective } from 'src/app/directives/zero-if-empty.directive
     ReactiveFormsModule,
     WorkHoursPageRoutingModule,
     ZeroIfEmptyDirective,
+    SearchBarModule,
   ],
   declarations: [
     WorkHoursComponent,
