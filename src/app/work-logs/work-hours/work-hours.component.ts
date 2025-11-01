@@ -32,6 +32,7 @@ export class WorkHoursComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
+    this.body.month = this.now.toISOString().slice(0, 7);
     await this.loadingData();
   }
 
@@ -76,6 +77,14 @@ export class WorkHoursComponent implements OnInit {
   async handleRefresh(event: RefresherCustomEvent) {
     this.loaded = false;
     this.body.current = CURRENT_PAGE;
+    this.body.day = undefined;
+    this.body.month = this.now.toISOString().slice(0, 7);
+    this.body.year = undefined;
+    this.body.from = undefined;
+    this.body.to = undefined;
+
+    this.data_WorkLog = null;
+
     this.disabledInfinite = false;
     await this.loadingData();
     event.target.complete();
@@ -112,16 +121,41 @@ export class WorkHoursComponent implements OnInit {
         this.toast.error(msg);
       }
     } finally {
-      console.log(this.disabledInfinite);
-
       this.loaded = true;
     }
     event.target.complete();
   }
 
-  onSearchChange(event: any) {
-    console.log('Tìm kiếm:', event);
-    // event = { mode: 'month', value: '2025-10-01' } hoặc range
+  async onSearchChange(event: any) {
+    this.body.day = undefined;
+    this.body.month = undefined;
+    this.body.year = undefined;
+    this.body.from = undefined;
+    this.body.to = undefined;
+    this.body.current = CURRENT_PAGE;
+
+    switch (event.mode) {
+      case 'year':
+        this.body.year = event.value;
+        break;
+      case 'month':
+        this.body.month = event.value;
+        break;
+      case 'day': {
+        this.body.day = event.value;
+        break;
+      }
+      case 'range':
+        this.body.from = event.value.from;
+        this.body.to = event.value.to;
+        break;
+
+      default:
+        this.body.month = this.now.toISOString().slice(0, 7);
+        break;
+    }
+
+    await this.loadingData();
   }
 
 

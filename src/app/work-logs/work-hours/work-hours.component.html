@@ -56,7 +56,7 @@
     <div class="day-header">
       <div class="date">
         <ion-icon name="calendar-outline"></ion-icon>
-        <span>{{ item.start_time | date:'EEE, dd/MM':'UTC+9':'vi' }}</span>
+        <span>{{ item.start_time | date:'EEE, dd/MM':'vi' }}</span>
       </div>
 
       <ion-chip *ngIf="item.is_overtime" color="warning" class="overtime-chip" outline>
@@ -114,6 +114,14 @@
       <ion-label>{{ item.note }}</ion-label>
     </ion-item>
   </ion-card>
+
+  <app-no-data
+    *ngIf="data_WorkLog.results.length < 1"
+    [message]="'Không có dữ liệu'"
+    [submessage]="'Hãy thử thay đổi bộ lọc hoặc vuốt xuống để tải lại'"
+    buttonText="Tải lại"
+  >
+  </app-no-data>
 
   <ion-infinite-scroll [disabled]="disabledInfinite" (ionInfinite)="onIonInfinite($event)">
     <ion-infinite-scroll-content loadingText="Đang tải..." loadingSpinner="bubbles"></ion-infinite-scroll-content>

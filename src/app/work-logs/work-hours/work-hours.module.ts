@@ -7,7 +7,8 @@ import { WorkHoursComponent } from './work-hours.component';
 import { WorklogCreateComponent } from '../worklog-create/worklog-create.component';
 import { WorklogUpdateComponent } from '../worklog-update/worklog-update.component';
 import { ZeroIfEmptyDirective } from 'src/app/directives/zero-if-empty.directive';
-import { SearchBarModule } from 'src/app/search-bar/search-bar.module';
+import { SearchBarModule } from 'src/app/common/search-bar/search-bar.module';
+import { NoDataModule } from 'src/app/common/no-data/no-data.module';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { SearchBarModule } from 'src/app/search-bar/search-bar.module';
     WorkHoursPageRoutingModule,
     ZeroIfEmptyDirective,
     SearchBarModule,
+    NoDataModule
   ],
   declarations: [
     WorkHoursComponent,

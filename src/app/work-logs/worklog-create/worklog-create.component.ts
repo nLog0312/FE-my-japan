@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ModalController, ToastController } from '@ionic/angular';
-import { firstValueFrom, take, lastValueFrom, timeout, takeUntil } from 'rxjs';
+import { ModalController } from '@ionic/angular';
+import { lastValueFrom, timeout, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/services/auth';
 import { LoadingService } from 'src/app/services/loading.service';
 import { MyJapanApiService } from 'src/app/services/my-japan';
@@ -39,10 +39,10 @@ export class WorklogCreateComponent implements OnInit {
       end_time: [null, Validators.required],
       break_minutes: [60, [Validators.required, Validators.min(0)]],
       hourly_rate: [this.setup_worklog.hourly_rate ?? 0, [Validators.required, Validators.min(0)]],
-      regular_hours: [8],
+      regular_hours: [8, [Validators.min(0)]],
       is_overtime: [false],
-      overtime_hours: [0],
-      overtime_multiplier: [this.setup_worklog.overtime_multiplier ?? 0],
+      overtime_hours: [0, [Validators.min(0)]],
+      overtime_multiplier: [this.setup_worklog.overtime_multiplier ?? 0, [Validators.min(0)]],
       note: [null],
     });
 
@@ -109,6 +109,7 @@ export class WorklogCreateComponent implements OnInit {
     }
 
     const data = this.form.value;
+
     try {
       this.loading.show();
       const res = await lastValueFrom(

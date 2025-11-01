@@ -1,0 +1,8 @@
+<!-- Centered no-data view with a simple icon, message and optional button -->
+<ion-content class="no-data-content">
+  <div class="no-data-wrapper">
+    <h2 class="no-data-title">{{ message }}</h2>
+
+    <p *ngIf="submessage" class="no-data-sub">{{ submessage }}</p>
+  </div>
+</ion-content>

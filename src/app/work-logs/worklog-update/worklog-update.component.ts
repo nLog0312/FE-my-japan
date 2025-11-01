@@ -1,8 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ModalController, ToastController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { lastValueFrom, takeUntil, timeout } from 'rxjs';
-import { localInputToUTCIso, utcToLocalInput } from 'src/app/helpers/datetime-util';
 import { AuthService } from 'src/app/services/auth';
 import { LoadingService } from 'src/app/services/loading.service';
 import { MyJapanApiService } from 'src/app/services/my-japan';
@@ -28,20 +27,20 @@ export class WorklogUpdateComponent implements OnInit {
     private readonly myJapanApiService: MyJapanApiService,
     private readonly toast: ToastService,
     private readonly loading: LoadingService,
-    private fb: FormBuilder,
-    private modalCtrl: ModalController,
+    private readonly fb: FormBuilder,
+    private readonly modalCtrl: ModalController,
   ) {}
 
   ngOnInit() {
     this.form = this.fb.group({
-      start_time: [utcToLocalInput(this.workLog?.start_time), Validators.required],
-      end_time: [utcToLocalInput(this.workLog?.end_time), Validators.required],
+      start_time: [this.workLog?.start_time, Validators.required],
+      end_time: [this.workLog?.end_time, Validators.required],
       break_minutes: [this.workLog?.break_minutes, [Validators.required, Validators.min(0)]],
       hourly_rate: [this.workLog?.hourly_rate, [Validators.required, Validators.min(0)]],
-      regular_hours: [this.workLog?.regular_hours],
+      regular_hours: [this.workLog?.regular_hours, [Validators.min(0)]],
       is_overtime: [this.workLog?.is_overtime],
-      overtime_hours: [this.workLog?.overtime_hours],
-      overtime_multiplier: [this.workLog?.overtime_multiplier],
+      overtime_hours: [this.workLog?.overtime_hours, [Validators.min(0)]],
+      overtime_multiplier: [this.workLog?.overtime_multiplier, [Validators.min(0)]],
       note: [this.workLog?.note],
     });
 
@@ -71,8 +70,6 @@ export class WorklogUpdateComponent implements OnInit {
       return;
     }
 
-    formValue.start_time = localInputToUTCIso(formValue.start_time);
-    formValue.end_time = localInputToUTCIso(formValue.end_time);
     const updated = { ...this.workLog, ...formValue };
 
     try {
@@ -88,6 +85,8 @@ export class WorklogUpdateComponent implements OnInit {
         this.toast.error(res.message);
       } else {
         this.toast.success(res.message);
+
+        this.dismiss(updated);
       }
     } catch (err: any) {
       if (err?.status === 0) {
@@ -104,8 +103,6 @@ export class WorklogUpdateComponent implements OnInit {
       this.loading.hide();
       this.loaded = true;
     }
-
-    this.dismiss(updated);
   }
 
   dismiss(data?: any) {

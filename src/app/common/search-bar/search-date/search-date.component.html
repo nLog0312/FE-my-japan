@@ -1,0 +1,83 @@
+<ion-accordion-group expand="inset" #accordionGroup>
+  <ion-accordion value="search">
+    <ion-item slot="header" color="light">
+      <ion-icon name="search-outline" slot="start"></ion-icon>
+      <ion-label>Tìm kiếm</ion-label>
+    </ion-item>
+
+    <div class="search-content" slot="content">
+      <ion-item lines="none">
+        <ion-label>Chế độ</ion-label>
+        <ion-select [(ngModel)]="mode" (ionChange)="onModeChange($event)">
+          <ion-select-option value="year">Năm</ion-select-option>
+          <ion-select-option value="month">Tháng - Năm</ion-select-option>
+          <ion-select-option value="day">Ngày - Tháng - Năm</ion-select-option>
+          <ion-select-option value="range">Khoảng thời gian</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Năm -->
+      <ion-item *ngIf="mode === 'year'">
+        <ion-datetime
+          presentation="year"
+          locale="vi-GB"
+          (ionChange)="changeValue($event)"
+        >
+        </ion-datetime>
+      </ion-item>
+
+      <!-- Tháng - Năm -->
+      <ion-item *ngIf="mode === 'month'">
+        <ion-datetime
+          presentation="month-year"
+          locale="vi-GB"
+          (ionChange)="changeValue($event)">
+        </ion-datetime>
+      </ion-item>
+
+      <!-- Ngày - Tháng - Năm -->
+      <ion-item *ngIf="mode === 'day'">
+        <ion-datetime
+          presentation="date"
+          locale="vi-GB"
+          (ionChange)="changeValue($event)">
+        </ion-datetime>
+      </ion-item>
+
+      <!-- Khoảng thời gian -->
+      <ion-item *ngIf="mode === 'range'">
+        <nz-date-picker
+          [nzDisabledDate]="disabledStartDate"
+          locale="vi-GB"
+          nzFormat="dd-MM-yyyy"
+          [(ngModel)]="rangeValue.start"
+          nzPlaceHolder="Từ"
+          (nzOnOpenChange)="openChange($event)"
+          [nzStatus]="errorStartDate"
+        ></nz-date-picker>
+        <ion-icon name="arrow-forward-outline"></ion-icon>
+        <nz-date-picker
+          #endDatePicker
+          [nzDisabledDate]="disabledEndDate"
+          locale="vi-GB"
+          nzFormat="dd-MM-yyyy"
+          [(ngModel)]="rangeValue.end"
+          nzPlaceHolder="Đến"
+          [nzStatus]="errorEndDate"
+        ></nz-date-picker>
+      </ion-item>
+
+      <div class="d-flex justify-content-around">
+        <ion-button fill="outline" color="medium" (click)="reset()">
+          <ion-icon name="refresh-outline" slot="start"></ion-icon>
+          Làm mới
+        </ion-button>
+
+        <ion-button fill="outline" color="secondary" (click)="emitSearch()">
+          <ion-icon name="search-outline" slot="start"></ion-icon>
+          Tìm kiếm
+        </ion-button>
+      </div>
+    </div>
+  </ion-accordion>
+</ion-accordion-group>

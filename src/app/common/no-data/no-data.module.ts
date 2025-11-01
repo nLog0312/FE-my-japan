@@ -2,7 +2,7 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SearchDateComponent } from './search-date/search-date.component';
+import { NoDataComponent } from './no-data.component';
 
 @NgModule({
   imports: [
@@ -12,10 +12,10 @@ import { SearchDateComponent } from './search-date/search-date.component';
     ReactiveFormsModule,
   ],
   declarations: [
-    SearchDateComponent,
+    NoDataComponent,
   ],
   exports: [
-    SearchDateComponent,
+    NoDataComponent,
   ]
 })
-export class SearchBarModule { }
+export class NoDataModule { }

@@ -13,6 +13,9 @@ import { AuthInterceptor } from './interceptor/auth.interceptor';
 import localeVi from '@angular/common/locales/vi';
 import localeJa from '@angular/common/locales/ja';
 import { CommonModule, registerLocaleData } from '@angular/common';
+import { NZ_I18N, vi_VN } from 'ng-zorro-antd/i18n';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 registerLocaleData(localeVi, 'vi');
 registerLocaleData(localeJa, 'ja-JP');
@@ -25,12 +28,15 @@ registerLocaleData(localeJa, 'ja-JP');
     IonicModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
+    BrowserAnimationsModule,
+    NoopAnimationsModule,
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: API_BASE_URL, useValue: environment.API_BASE_URL },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: LOCALE_ID, useValue: 'vi' }
+    { provide: LOCALE_ID, useValue: 'vi' },
+    { provide: NZ_I18N, useValue: vi_VN }
   ],
   bootstrap: [AppComponent],
 })

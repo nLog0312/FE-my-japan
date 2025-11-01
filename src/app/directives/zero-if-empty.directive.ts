@@ -6,7 +6,7 @@ import { IonInput } from '@ionic/angular';
   standalone: true,
 })
 export class ZeroIfEmptyDirective {
-  constructor(private el: ElementRef<IonInput>) {}
+  constructor(private readonly el: ElementRef<IonInput>) {}
 
   @HostListener('ionBlur')
   async onBlur() {
@@ -16,6 +16,9 @@ export class ZeroIfEmptyDirective {
 
     if (!value) {
       ionInput.value = 0;
+      inputEl.value = '0';
+
+      ionInput.dispatchEvent(new CustomEvent('ionInput', { detail: { value: 0 } }));
       ionInput.dispatchEvent(new CustomEvent('ionChange', { detail: { value: 0 } }));
     }
   }
