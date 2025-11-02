@@ -66,7 +66,7 @@ export class WorklogCreateComponent implements OnInit {
       this.loading.show();
       const res = await lastValueFrom(
         this.myJapanApiService.apiV1UsersGetSetupWorklog(this.user_id).pipe(
-          timeout(10000),
+          timeout(60000),
           takeUntil(this.auth.loggedOut$)
         )
       );
@@ -114,7 +114,7 @@ export class WorklogCreateComponent implements OnInit {
       this.loading.show();
       const res = await lastValueFrom(
         this.myJapanApiService.apiV1WorkLogs(data).pipe(
-          timeout(10000),
+          timeout(60000),
           takeUntil(this.auth.loggedOut$)
         )
       );

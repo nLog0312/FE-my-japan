@@ -56,7 +56,7 @@ export class FinanceComponent implements OnInit {
       this.body.pageSize = PAGE_SIZE;
       const res = await lastValueFrom(
         this.myJapanApiService.apiV1MonthlySheetsGetAll(this.body).pipe(
-          timeout(10000),
+          timeout(60000),
           takeUntil(this.auth.loggedOut$)
         )
       );
@@ -102,7 +102,7 @@ export class FinanceComponent implements OnInit {
     try {
       const res = await lastValueFrom(
         this.myJapanApiService.apiV1WorkLogsGetAll(this.body).pipe(
-          timeout(10000),
+          timeout(60000),
           takeUntil(this.auth.loggedOut$)
         )
       );
@@ -182,7 +182,7 @@ export class FinanceComponent implements OnInit {
             this.loading.show();
             const res = await lastValueFrom(
               this.myJapanApiService.apiV1MonthlySheetsDeleteMonthlySheet(finance._id).pipe(
-                timeout(10000),
+                timeout(60000),
                 takeUntil(this.auth.loggedOut$)
               )
             );

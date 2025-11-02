@@ -55,7 +55,7 @@ export class FinanceUpdateComponent implements OnInit {
       this.loading.show();
       const res = await lastValueFrom(
         this.myJapanApiService.apiV1MonthlySheetsUpdateMonthlySheet(updated).pipe(
-          timeout(10000),
+          timeout(60000),
           takeUntil(this.auth.loggedOut$)
         )
       );

@@ -56,7 +56,7 @@ export class ProfileModalComponent implements OnInit {
       this.profile._id = user?.id ?? '';
       this.myJapanApiService.apiV1UsersGetOne(this.profile._id)
       .pipe(
-        timeout(10000),
+        timeout(60000),
         takeUntil(this.auth.loggedOut$),
       )
       .subscribe({
@@ -111,7 +111,7 @@ export class ProfileModalComponent implements OnInit {
     this.loading.show();
     this.myJapanApiService.apiV1UsersUpdateUserInformation(this.profile)
     .pipe(
-      timeout(10000), // tránh treo request
+      timeout(60000), // tránh treo request
       catchError((err: HttpErrorResponse) => {
         if (err.status === 0) {
           // Không tới được server: mạng/ CORS/ server down

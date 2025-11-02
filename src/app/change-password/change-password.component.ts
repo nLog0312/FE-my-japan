@@ -62,7 +62,7 @@ export class ChangePasswordComponent {
           old_password,
           new_password,
         }).pipe(
-          timeout(10000),
+          timeout(60000),
           takeUntil(this.auth.loggedOut$)
         )
       );

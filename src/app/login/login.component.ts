@@ -104,7 +104,7 @@ export class LoginComponent implements OnInit {
     this.loading.show();
 
     this.myJapanApiService.apiV1AuthLogin(payload)
-      .pipe(timeout(10000), catchError(err => this.handleHttpError(err)))
+      .pipe(timeout(60000), catchError(err => this.handleHttpError(err)))
       .subscribe({
         next: async (r) => {
           if (r.statusCode && r.statusCode >= 400) {
@@ -140,7 +140,7 @@ export class LoginComponent implements OnInit {
     this.loading.show();
 
     this.myJapanApiService.apiV1AuthRegister(payload)
-      .pipe(timeout(10000), catchError(err => this.handleHttpError(err)))
+      .pipe(timeout(60000), catchError(err => this.handleHttpError(err)))
       .subscribe({
         next: async (r) => {
           if (r.statusCode && r.statusCode >= 400) {

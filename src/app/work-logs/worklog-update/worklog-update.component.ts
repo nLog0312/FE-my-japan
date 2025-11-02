@@ -76,7 +76,7 @@ export class WorklogUpdateComponent implements OnInit {
       this.loading.show();
       const res = await lastValueFrom(
         this.myJapanApiService.apiV1WorkLogsUpdateWorkLog(updated).pipe(
-          timeout(10000),
+          timeout(60000),
           takeUntil(this.auth.loggedOut$)
         )
       );

@@ -44,7 +44,7 @@ export class WorkHoursComponent implements OnInit {
       this.body.pageSize = PAGE_SIZE;
       const res = await lastValueFrom(
         this.myJapanApiService.apiV1WorkLogsGetAll(this.body).pipe(
-          timeout(10000),
+          timeout(60000),
           takeUntil(this.auth.loggedOut$)
         )
       );
@@ -95,7 +95,7 @@ export class WorkHoursComponent implements OnInit {
     try {
       const res = await lastValueFrom(
         this.myJapanApiService.apiV1WorkLogsGetAll(this.body).pipe(
-          timeout(10000),
+          timeout(60000),
           takeUntil(this.auth.loggedOut$)
         )
       );
@@ -199,7 +199,7 @@ export class WorkHoursComponent implements OnInit {
             this.loading.show();
             const res = await lastValueFrom(
               this.myJapanApiService.apiV1WorkLogsDeleteWorkLog(workLog._id).pipe(
-                timeout(10000),
+                timeout(60000),
                 takeUntil(this.auth.loggedOut$)
               )
             );
