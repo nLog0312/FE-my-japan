@@ -23,12 +23,13 @@ export interface IMyJapanApiService {
     apiV1UsersChangePassword(body: any): Observable<ResponseDto>;
     apiV1UsersDelete(id: string): Observable<void>;
     apiV1WorkLogs(body: any): Observable<ResponseDto>;
+    apiV1WorkLogsRunDailyAddWorklog(): Observable<void>;
     apiV1WorkLogsGetAll(body: WorkLogQueryDto): Observable<ResponseDto>;
     apiV1WorkLogsGetOne(id: string): Observable<ResponseDto>;
     apiV1WorkLogsUpdateWorkLog(body: any): Observable<ResponseDto>;
     apiV1WorkLogsDeleteWorkLog(id: string): Observable<ResponseDto>;
     apiV1MonthlySheets(body: any): Observable<ResponseDto>;
-    apiV1MonthlySheetsGetAll(): Observable<ResponseDto>;
+    apiV1MonthlySheetsGetAll(body: MonthSheetQueryDto): Observable<ResponseDto>;
     apiV1MonthlySheetsGetOne(id: string): Observable<ResponseDto>;
     apiV1MonthlySheetsUpdateMonthlySheet(body: any): Observable<ResponseDto>;
     apiV1MonthlySheetsDeleteMonthlySheet(id: string): Observable<ResponseDto>;
@@ -39,6 +40,7 @@ export interface IMyJapanApiService {
     apiV1TodosDeleteTodo(id: string): Observable<ResponseDto>;
     apiV1AuthLogin(body: any): Observable<ResponseDto>;
     apiV1AuthRegister(body: any): Observable<ResponseDto>;
+    apiV1AuthHealth(): Observable<void>;
 }
 
 @Injectable({
@@ -459,6 +461,50 @@ export class MyJapanApiService implements IMyJapanApiService {
         return _observableOf(null as any);
     }
 
+    apiV1WorkLogsRunDailyAddWorklog(): Observable<void> {
+        let url_ = this.baseUrl + "/api/v1/work-logs/run-daily-add-worklog";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processApiV1WorkLogsRunDailyAddWorklog(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processApiV1WorkLogsRunDailyAddWorklog(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processApiV1WorkLogsRunDailyAddWorklog(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     apiV1WorkLogsGetAll(body: WorkLogQueryDto): Observable<ResponseDto> {
         let url_ = this.baseUrl + "/api/v1/work-logs/get-all";
         url_ = url_.replace(/[?&]$/, "");
@@ -717,19 +763,23 @@ export class MyJapanApiService implements IMyJapanApiService {
         return _observableOf(null as any);
     }
 
-    apiV1MonthlySheetsGetAll(): Observable<ResponseDto> {
+    apiV1MonthlySheetsGetAll(body: MonthSheetQueryDto): Observable<ResponseDto> {
         let url_ = this.baseUrl + "/api/v1/monthly-sheets/get-all";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processApiV1MonthlySheetsGetAll(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -1276,6 +1326,50 @@ export class MyJapanApiService implements IMyJapanApiService {
         }
         return _observableOf(null as any);
     }
+
+    apiV1AuthHealth(): Observable<void> {
+        let url_ = this.baseUrl + "/api/v1/auth/health";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processApiV1AuthHealth(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processApiV1AuthHealth(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processApiV1AuthHealth(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export class ResponseDto implements IResponseDto {
@@ -1412,6 +1506,89 @@ export class WorkLogQueryDto implements IWorkLogQueryDto {
 }
 
 export interface IWorkLogQueryDto {
+    user_id: string;
+    day?: string;
+    month?: string;
+    year?: string;
+    from?: string;
+    to?: string;
+    current?: number;
+    pageSize?: number;
+
+    [key: string]: any;
+}
+
+export class MonthSheetQueryDto implements IMonthSheetQueryDto {
+    user_id!: string;
+    day?: string;
+    month?: string;
+    year?: string;
+    from?: string;
+    to?: string;
+    current?: number;
+    pageSize?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IMonthSheetQueryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.user_id = _data["user_id"] !== undefined ? _data["user_id"] : null as any;
+            this.day = _data["day"] !== undefined ? _data["day"] : null as any;
+            this.month = _data["month"] !== undefined ? _data["month"] : null as any;
+            this.year = _data["year"] !== undefined ? _data["year"] : null as any;
+            this.from = _data["from"] !== undefined ? _data["from"] : null as any;
+            this.to = _data["to"] !== undefined ? _data["to"] : null as any;
+            this.current = _data["current"] !== undefined ? _data["current"] : null as any;
+            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : null as any;
+        }
+    }
+
+    static fromJS(data: any): MonthSheetQueryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MonthSheetQueryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["user_id"] = this.user_id !== undefined ? this.user_id : null as any;
+        data["day"] = this.day !== undefined ? this.day : null as any;
+        data["month"] = this.month !== undefined ? this.month : null as any;
+        data["year"] = this.year !== undefined ? this.year : null as any;
+        data["from"] = this.from !== undefined ? this.from : null as any;
+        data["to"] = this.to !== undefined ? this.to : null as any;
+        data["current"] = this.current !== undefined ? this.current : null as any;
+        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : null as any;
+        return data;
+    }
+
+    clone(): MonthSheetQueryDto {
+        const json = this.toJSON();
+        let result = new MonthSheetQueryDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMonthSheetQueryDto {
     user_id: string;
     day?: string;
     month?: string;

@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Sửa Monthly Sheet</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (loaded) {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <ion-list lines="full">
+        <ion-item class="item-time">
+          <ion-label position="stacked">Ngày phát sinh <span class="required">*</span></ion-label>
+          <ion-datetime-button datetime="entryDate"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime
+                id="entryDate"
+                presentation="date"
+                locale="vi-GB"
+                formControlName="entry_date">
+              </ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </ion-item>
+        <ion-note color="danger" *ngIf="form.get('entry_date')?.touched && form.get('entry_date')?.hasError('required')">
+          Ngày phát sinh không được để trống.
+        </ion-note>
+
+        <ion-item class="item-time" class="item-time">
+          <ion-label>Kiểu (Thu / Chi)</ion-label><br />
+          <ion-radio-group formControlName="kind">
+            <ion-radio [value]="true" justify="space-between">Thu</ion-radio>
+            <ion-radio [value]="false" justify="space-between">Chi</ion-radio>
+          </ion-radio-group>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Số tiền <span class="required">*</span></ion-label>
+          <ion-input type="number" formControlName="amount" placeholder="Nhập số tiền"></ion-input>
+        </ion-item>
+        <ion-note color="danger" *ngIf="form.get('amount')?.touched && form.get('amount')?.hasError('required')">
+          Số tiền không được để trống.
+        </ion-note>
+
+        <ion-item>
+          <ion-label position="stacked">Tên khoản <span class="required">*</span></ion-label>
+          <ion-input formControlName="name" placeholder="Nhập tên khoản"></ion-input>
+        </ion-item>
+        <ion-note color="danger" *ngIf="form.get('name')?.touched && form.get('name')?.hasError('required')">
+          Tên khoản không được để trống.
+        </ion-note>
+
+        <ion-item>
+          <ion-label position="stacked">Ghi chú</ion-label>
+          <ion-textarea formControlName="note" placeholder="Thêm ghi chú (tuỳ chọn)"></ion-textarea>
+        </ion-item>
+      </ion-list>
+
+      <ion-button [disabled]="form.invalid" expand="block" type="submit" color="primary" class="ion-margin-top">
+        Cập nhật
+      </ion-button>
+    </form>
+  }
+</ion-content>

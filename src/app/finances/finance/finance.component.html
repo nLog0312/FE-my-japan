@@ -1,0 +1,140 @@
+<ion-header translucent="true" class="ion-no-border">
+  <ion-toolbar class="p-3">
+    <div class="title">
+      <h1 class="mb-0">
+        Thu/Chi
+      </h1>
+    </div>
+    <div class="sub-title">
+      Tháng {{ now | date:'MM, y' }}
+    </div>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="addEntry()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Thêm
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="app-bg">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Kéo để làm mới"
+      refreshingSpinner="circles"
+      refreshingText="Làm mới..."
+    >
+    </ion-refresher-content>
+  </ion-refresher>
+@if (loaded && data_Finance) {
+  <!-- Balance card -->
+  <ion-card class="balance-card">
+    <div class="balance-title">Số dư</div>
+    <div class="balance-value">
+      {{ data_Finance.total_amount | currency:'JPY':'symbol':'1.0-0':'ja-JP' }}
+    </div>
+
+    <div class="mini-stats">
+      <div class="mini">
+        <div class="mini-label">Thu nhập</div>
+        <div class="mini-value">
+          {{ data_Finance.total_amount_income | currency:'JPY':'symbol':'1.0-0':'ja-JP' }}
+        </div>
+      </div>
+      <div class="mini">
+        <div class="mini-label">Chi tiêu</div>
+        <div class="mini-value">
+          {{ data_Finance.total_amount_expense | currency:'JPY':'symbol':'1.0-0':'ja-JP' }}
+        </div>
+      </div>
+    </div>
+  </ion-card>
+
+  <!-- Segments -->
+  <div class="seg-wrapper">
+    <ion-segment [(ngModel)]="segment" mode="ios">
+      <ion-segment-button value="all">
+        <ion-label>Tất cả</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="income">
+        <ion-label>Thu nhập</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="expense">
+        <ion-label>Chi tiêu</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Transactions list -->
+  <ion-list lines="none">
+    <ion-card class="tx-card" *ngFor="let finance of filteredFinances" [class.income]="finance.kind" [class.expense]="!finance.kind">
+      <div class="row1">
+        <div class="left">
+          <ion-badge [color]="finance.kind ? 'success' : 'danger'" class="dot" mode="ios"> </ion-badge>
+          <div class="title">{{ finance.name }}</div>
+        </div>
+        <div class="amount" [class.plus]="finance.kind" [class.minus]="!finance.kind">
+          <span class="sign">{{ finance.kind ? '+' : '-' }}</span>
+          {{ (finance.amount) | currency:'JPY':'symbol':'1.0-0':'ja-JP' }}
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="meta">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>{{ finance.entry_date | date:'EEE, dd/MM':'vi' }}</span>
+        </div>
+
+        <div class="actions">
+          <ion-button size="small" fill="outline" (click)="onEdit(finance)">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            Sửa
+          </ion-button>
+          <ion-button size="small" color="danger" (click)="onDelete(finance)">
+            <ion-icon name="trash-outline" slot="start"></ion-icon>
+            Xóa
+          </ion-button>
+        </div>
+      </div>
+
+      <div class="note" *ngIf="finance.note">
+        <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+        <span>{{ finance.note }}</span>
+      </div>
+    </ion-card>
+  </ion-list>
+
+  <app-no-data
+    *ngIf="data_Finance.results.length < 1"
+    [message]="'Không có dữ liệu'"
+    [submessage]="'Hãy thử thay đổi bộ lọc hoặc vuốt xuống để tải lại'"
+    buttonText="Tải lại"
+  >
+  </app-no-data>
+
+  <ion-infinite-scroll [disabled]="disabledInfinite" (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content loadingText="Đang tải..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <div class="spacer"></div>
+} @else {
+  <ion-card class="day-card">
+    <ion-list>
+      <ion-item>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text [animated]="true" style="width: 80%;"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text [animated]="true" style="width: 60%;"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text [animated]="true" style="width: 30%;"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+}
+</ion-content>

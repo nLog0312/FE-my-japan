@@ -16,7 +16,7 @@
       <ion-list lines="full">
         <!-- Giờ bắt đầu -->
         <ion-item class="item-time">
-          <ion-label position="stacked">Giờ bắt đầu</ion-label>
+          <ion-label position="stacked">Giờ bắt đầu <span class="required">*</span></ion-label>
           <ion-datetime-button datetime="startTime"></ion-datetime-button>
           <ion-modal [keepContentsMounted]="true">
             <ng-template>
@@ -35,7 +35,7 @@
 
         <!-- Thời gian kết thúc -->
         <ion-item class="item-time">
-          <ion-label position="stacked">Giờ kết thúc</ion-label>
+          <ion-label position="stacked">Giờ kết thúc <span class="required">*</span></ion-label>
           <ion-datetime-button datetime="endTime"></ion-datetime-button>
           <ion-modal [keepContentsMounted]="true">
             <ng-template>
@@ -54,13 +54,13 @@
 
         <!-- Thời gian nghỉ -->
         <ion-item>
-          <ion-label position="floating">Thời gian nghỉ (phút)</ion-label>
+          <ion-label position="floating">Thời gian nghỉ (phút) <span class="required">*</span></ion-label>
           <ion-input type="number" formControlName="break_minutes" appZeroIfEmpty></ion-input>
         </ion-item>
 
         <!-- Lương -->
         <ion-item>
-          <ion-label position="floating">Tiền theo giờ (¥)</ion-label>
+          <ion-label position="floating">Tiền theo giờ (¥) <span class="required">*</span></ion-label>
           <ion-input type="number" formControlName="hourly_rate" appZeroIfEmpty></ion-input>
           <ion-note slot="end" (click)="showPopover($event)">
             <ion-icon name="alert-circle-outline"></ion-icon>

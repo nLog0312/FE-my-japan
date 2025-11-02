@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FinancePageRoutingModule } from './finance-routing.module';
 import { FinanceComponent } from './finance.component';
+import { FinanceCreateComponent } from '../finance-create/finance-create.component';
+import { FinanceUpdateComponent } from '../finance-update/finance-update.component';
+import { NoDataModule } from 'src/app/common/no-data/no-data.module';
 
 @NgModule({
   imports: [
@@ -11,10 +14,13 @@ import { FinanceComponent } from './finance.component';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    FinancePageRoutingModule
+    FinancePageRoutingModule,
+    NoDataModule,
   ],
   declarations: [
     FinanceComponent,
+    FinanceCreateComponent,
+    FinanceUpdateComponent,
   ],
 })
 export class FinancesModule { }

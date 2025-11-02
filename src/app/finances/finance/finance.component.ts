@@ -1,24 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController, RefresherCustomEvent, ModalController, InfiniteScrollCustomEvent } from '@ionic/angular';
-import { LoadingService } from '../../services/loading.service';
-import { MyJapanApiService, WorkLogQueryDto } from '../../services/my-japan';
-import { ToastService } from '../../services/toast';
-import { firstValueFrom, lastValueFrom, take, takeUntil, timeout } from 'rxjs';
-import { AuthService } from '../../services/auth';
-import { WorklogCreateComponent } from '../worklog-create/worklog-create.component';
-import { WorklogUpdateComponent } from '../worklog-update/worklog-update.component';
+import { AlertController, InfiniteScrollCustomEvent, ModalController, RefresherCustomEvent } from '@ionic/angular';
+import { FinanceCreateComponent } from '../finance-create/finance-create.component';
+import { firstValueFrom, take, lastValueFrom, timeout, takeUntil } from 'rxjs';
 import { CURRENT_PAGE, PAGE_SIZE } from 'src/app/constants';
+import { AuthService } from 'src/app/services/auth';
+import { LoadingService } from 'src/app/services/loading.service';
+import { MonthSheetQueryDto, MyJapanApiService } from 'src/app/services/my-japan';
+import { ToastService } from 'src/app/services/toast';
+import { FinanceUpdateComponent } from '../finance-update/finance-update.component';
+
+type TxType = 'income' | 'expense';
+
+interface Transaction {
+  id: string;
+  title: string;
+  note?: string;
+  dateISO: string;     // '2025-10-13'
+  amount: number;      // dương cho income, âm cho expense
+  type: TxType;
+  tagColor?: string;   // 'success' | 'danger' | 'warning' ...
+}
 
 @Component({
-  selector: 'app-work-hours',
-  templateUrl: './work-hours.component.html',
-  styleUrls: ['./work-hours.component.scss'],
+  selector: 'app-finance',
+  templateUrl: './finance.component.html',
+  styleUrls: ['./finance.component.scss'],
   standalone: false,
 })
-export class WorkHoursComponent implements OnInit {
+export class FinanceComponent implements OnInit {
   now = new Date();
-  body: WorkLogQueryDto = new WorkLogQueryDto();
-  data_WorkLog: any;
+  segment: 'all' | TxType = 'all';
+  body: MonthSheetQueryDto = new MonthSheetQueryDto();
+  data_Finance: any;
   public loaded = false;
   public disabledInfinite = false;
 
@@ -32,7 +45,6 @@ export class WorkHoursComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.body.month = this.now.toISOString().slice(0, 7);
     await this.loadingData();
   }
 
@@ -43,7 +55,7 @@ export class WorkHoursComponent implements OnInit {
       this.body.current = CURRENT_PAGE;
       this.body.pageSize = PAGE_SIZE;
       const res = await lastValueFrom(
-        this.myJapanApiService.apiV1WorkLogsGetAll(this.body).pipe(
+        this.myJapanApiService.apiV1MonthlySheetsGetAll(this.body).pipe(
           timeout(10000),
           takeUntil(this.auth.loggedOut$)
         )
@@ -56,7 +68,7 @@ export class WorkHoursComponent implements OnInit {
           this.body.current += 1;
         else this.disabledInfinite = true;
 
-        this.data_WorkLog = res.data;
+        this.data_Finance = res.data;
       }
     } catch (err: any) {
       if (err?.status === 0) {
@@ -77,13 +89,8 @@ export class WorkHoursComponent implements OnInit {
   async handleRefresh(event: RefresherCustomEvent) {
     this.loaded = false;
     this.body.current = CURRENT_PAGE;
-    this.body.day = undefined;
-    this.body.month = this.now.toISOString().slice(0, 7);
-    this.body.year = undefined;
-    this.body.from = undefined;
-    this.body.to = undefined;
 
-    this.data_WorkLog = null;
+    this.data_Finance = null;
 
     this.disabledInfinite = false;
     await this.loadingData();
@@ -107,7 +114,7 @@ export class WorkHoursComponent implements OnInit {
           this.body.current += 1;
         else this.disabledInfinite = true;
 
-        this.data_WorkLog.results = [ ...this.data_WorkLog.results, ...res.data.results ];
+        this.data_Finance.results = [ ...this.data_Finance.results, ...res.data.results ];
       }
     } catch (err: any) {
       if (err?.status === 0) {
@@ -126,42 +133,17 @@ export class WorkHoursComponent implements OnInit {
     event.target.complete();
   }
 
-  async onSearchChange(event: any) {
-    this.body.day = undefined;
-    this.body.month = undefined;
-    this.body.year = undefined;
-    this.body.from = undefined;
-    this.body.to = undefined;
-    this.body.current = CURRENT_PAGE;
+  get filteredFinances() {
+    if (this.segment === 'all') return this.data_Finance.results;
+    if (this.segment === 'income')
+      return this.data_Finance.results.filter((t: { kind: boolean; }) => t.kind === true);
 
-    switch (event.mode) {
-      case 'year':
-        this.body.year = event.value;
-        break;
-      case 'month':
-        this.body.month = event.value;
-        break;
-      case 'day': {
-        this.body.day = event.value;
-        break;
-      }
-      case 'range':
-        this.body.from = event.value.from;
-        this.body.to = event.value.to;
-        break;
-
-      default:
-        this.body.month = this.now.toISOString().slice(0, 7);
-        break;
-    }
-
-    await this.loadingData();
+    return this.data_Finance.results.filter((t: { kind: boolean; }) => t.kind === false);
   }
-
 
   async addEntry() {
     const modal = await this.modalCtrl.create({
-      component: WorklogCreateComponent,
+      component: FinanceCreateComponent,
       componentProps: {
         user_id: this.body.user_id
       },
@@ -172,11 +154,11 @@ export class WorkHoursComponent implements OnInit {
       this.loadingData();
   }
 
-  async onEdit(workLog: any) {
+  async onEdit(finance: any) {
     const modal = await this.modalCtrl.create({
-      component: WorklogUpdateComponent,
+      component: FinanceUpdateComponent,
       componentProps: {
-        workLog: workLog
+        finance: finance
       },
     });
     await modal.present();
@@ -185,20 +167,21 @@ export class WorkHoursComponent implements OnInit {
       this.loadingData();
   }
 
-  async onDelete(workLog: any) {
-    const formattedDate = new Date(workLog.start_time)
+  async onDelete(finance: any) {
+    const formattedDate = new Date(finance.entry_date)
       .toLocaleDateString('vi-VN')
       .replace(/\//g, '-');
+      const type = finance.kind ? 'thu' : 'chi';
     const a = await this.alertCtrl.create({
-      header: 'Xóa ngày làm',
-      message: `Xóa ngày ${formattedDate}?`,
+      header: `Xóa ${type}`,
+      message: `Xóa ${type} ngày ${formattedDate}?`,
       buttons: [
         { text: 'Hủy', role: 'cancel' },
         { text: 'Xóa', role: 'destructive', handler: async () => {
           try {
             this.loading.show();
             const res = await lastValueFrom(
-              this.myJapanApiService.apiV1WorkLogsDeleteWorkLog(workLog._id).pipe(
+              this.myJapanApiService.apiV1MonthlySheetsDeleteMonthlySheet(finance._id).pipe(
                 timeout(10000),
                 takeUntil(this.auth.loggedOut$)
               )
@@ -207,7 +190,7 @@ export class WorkHoursComponent implements OnInit {
             if (res.statusCode && res.statusCode >= 400) {
               this.toast.error(res.message);
             } else {
-              this.data_WorkLog.results = this.data_WorkLog.results.filter((w: any) => w !== workLog);
+              this.data_Finance.results = this.data_Finance.results.filter((w: any) => w !== finance);
               this.toast.success(res.message);
             }
           } catch (err: any) {
